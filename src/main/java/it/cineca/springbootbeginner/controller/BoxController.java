@@ -4,6 +4,9 @@ package it.cineca.springbootbeginner.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
+import it.cineca.springbootbeginner.component.BoxWrapper;
 import it.cineca.springbootbeginner.dto.BoxDto;
 import it.cineca.springbootbeginner.model.Box;
 import it.cineca.springbootbeginner.service.BoxService;
@@ -42,8 +47,18 @@ public class BoxController {
     }
     
     @RequestMapping(value = {OBJ_MAPPING + "/newBox"}, method = RequestMethod.POST)
-    public ResponseEntity<Box>  createNewBox(@RequestBody Box box) {
-    	return new ResponseEntity<Box>(boxService.saveBox(box), HttpStatus.OK);
+    public ResponseEntity<BoxDto>  createNewBox(@RequestBody @Valid BoxDto boxDto) {
+    	return new ResponseEntity<BoxDto>(boxService.createNewBox(boxDto), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = {OBJ_MAPPING + "/submit"}, method = RequestMethod.POST)
+    public ResponseEntity<?>  submitBoxes() {
+    	try {
+    		boxService.saveAllBoxes();
+    	} catch (HttpClientErrorException e) {
+    		return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+		}
+    	return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @RequestMapping(value = {OBJ_MAPPING + "/updateBox/{id}"}, method = RequestMethod.PATCH)
@@ -52,19 +67,7 @@ public class BoxController {
     	if(!oldBox.isPresent()) {
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
-    	
-    	Box boxToPatch = oldBox.get();
-    	if(patch.getName() != null && !patch.getName().trim().isEmpty()) {
-    		boxToPatch.setName(patch.getName());
-    	}
-    	if(patch.getAuthor() != null && !patch.getAuthor().trim().isEmpty()) {
-    		boxToPatch.setAuthor(patch.getAuthor());
-    	}
-    	if(patch.getLastUpdate() != null) {
-    		boxToPatch.setLastUpdate(patch.getLastUpdate());
-    	}
-    	
-    	return new ResponseEntity<Box>(boxService.saveBox(boxToPatch), HttpStatus.OK);
+    	return new ResponseEntity<Box>(boxService.updateBox(id, oldBox.get(), patch), HttpStatus.OK);
     }
     
     @RequestMapping(value = {OBJ_MAPPING + "/deleteBox/{id}"}, method = RequestMethod.DELETE)
