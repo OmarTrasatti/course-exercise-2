@@ -1,24 +1,23 @@
 package it.cineca.springbootbeginner.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class BoxDto {
 
 	private String name;
 	private String author;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
+	
+	public BoxDto(String name, String author) {
+		super();
 		this.name = name;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
 		this.author = author;
 	}
+	
+	
 	
 }

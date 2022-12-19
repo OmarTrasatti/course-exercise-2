@@ -1,5 +1,6 @@
 package it.cineca.springbootbeginner.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class BoxController {
 	@PatchMapping("/box/{id}")
 	public void patchSingleBox(@PathVariable("id") Long id, @RequestBody BoxDto boxDto) {
 		this.boxService.updateSingleBox(id, boxDto);
+	}
+	
+	@PostMapping("/submit")
+	public void submitBoxes() {
+		this.boxService.submitBoxes();
 	}
 	
 }
