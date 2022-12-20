@@ -61,5 +61,13 @@ public class BoxController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
+	@PostMapping("/submit")
+	public void submitBoxes() {
+		this.boxService.submit();
+	}
 	
+	@GetMapping("/wrapped")
+	public ResponseEntity<List<Box>> getWrapped(){
+		return ResponseEntity.ok(this.boxService.getWrapped());
+	}	
 }

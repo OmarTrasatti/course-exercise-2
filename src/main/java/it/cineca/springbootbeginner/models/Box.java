@@ -2,8 +2,6 @@ package it.cineca.springbootbeginner.models;
 
 import java.util.Date;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,19 +10,20 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+
 @Entity
 public class Box {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotEmpty
 	private String name;
-	
+
 	@Size(max = 150)
 	private String author;
-	
+
 	@Version
 	private Date lastUpDate;
 
